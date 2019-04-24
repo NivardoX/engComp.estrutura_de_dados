@@ -145,7 +145,7 @@ node cria_possibilidades(node nodoa) {
         b.visitado = -1;
         b.qnt_possi = 0;
 
-        aloc_din_vetor[i] = b;r
+        aloc_din_vetor[i] = b;
     }
 
     nodoa.possibilidades = aloc_din_vetor;
