@@ -8,36 +8,36 @@ int aux1 = 1;
 int qnt_acertados = 1;
 //-------------------------------//
 
+//-----------Prototipos----------//
+int dfs(node nodo_atual);
+//-------------------------------//
 
-int dfs(node nodoP) {
+int dfs(node nodo_atual) {
 
-   // printf("\n\nDFS N° %d\n",COUNT_DFS+1);
-    if (checar_rainhas(nodoP.estado) == 8) {
-    	if (nodoP.estado[0] != nodoP.estado[1]){
-    		printf("\n" );
-	    	for (int i = 0; i < 8; i++) {
-	            printf("%d ", nodoP.estado[i]);
-	        }
-
-	        printf("ESTADO POSSÍVEL N° %d\n",qnt_acertados++);
+    if (checar_rainhas(nodo_atual.estado) == 8) {
+    	if (nodo_atual.estado[0] != nodo_atual.estado[1]){
+            printf("--------------------------------------\n");
+            for (int i = 0; i < 8; i++) {
+               printf("%d ", nodo_atual.estado[i]);
+           }
+           printf("ESTADO POSSÍVEL N° %d\n",qnt_acertados++);
+           printf("--------------------------------------\n");
 	        //exit(0);
-	 	}   	
+       }   	
+   }
+   while (nodo_atual.visitado < nodo_atual.qnt_possi) {
+    if (COUNT_DFS != 0)
+        nodo_atual = cria_possibilidades(nodo_atual);
+    COUNT_DFS++;
+
+    if (nodo_atual.qnt_possi == 0) {
+        return 0;
     }
-    while (nodoP.visitado < nodoP.qnt_possi) {
-        if (COUNT_DFS != 0)
-            nodoP = cria_possibilidades(nodoP);
-        COUNT_DFS++;
+    dfs(nodo_atual.possibilidades[++nodo_atual.visitado]);
 
-        if (nodoP.qnt_possi == 0) {
-            //printf("Saiu %d\n", aux1++);
-            return 0;
-        }
-        dfs(nodoP.possibilidades[++nodoP.visitado]);
+}
 
-    }
-
-    //printf("Saiu %d\n", aux1++);
-    return 0;
+return 0;
 }
 
 
