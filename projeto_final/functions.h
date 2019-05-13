@@ -13,7 +13,6 @@ typedef struct node {
 
 
 //-----------Prototipos----------//
-
 node cria_possibilidades(node nodo_atual);
 node cria_node(int estado[8],node nodo_pai);
 node cria_node_zerado();
@@ -64,7 +63,7 @@ int checar_conflito(int *estado, int qnt_rainhas) {
 
 	return !flag;
 }
-
+//Checa se o estado já foi visitado
 int checar_visitado(int estado[8]) {
 	int flag = 0;
 	for (int i = 0; i < aux_visitados; i++) {
@@ -87,7 +86,7 @@ int checar_visitado(int estado[8]) {
 
 	return flag;
 }
-
+//Checa quantas rainhas existem no estado passado
 int checar_rainhas(int *estado) {
 	int qnt_rainhas = 0;
 	for (int i = 0; i < 8; i++) {
@@ -96,6 +95,7 @@ int checar_rainhas(int *estado) {
 	return qnt_rainhas;
 }
 
+//Recebe um nodo e crias as possibilidades dele
 node cria_possibilidades(node nodo_atual) {
 	if (checar_visitado(nodo_atual.estado)) {
 		node return_null;
@@ -104,7 +104,14 @@ node cria_possibilidades(node nodo_atual) {
 	}
    // printf("--------------------------\n");
 	for (int i = 0; i < 8; i++) {
-		printf("%2d ", nodo_atual.estado[i]);
+		if ( nodo_atual.estado[i] != -1)
+		{
+			printf("%2d ", nodo_atual.estado[i]);
+			/* code */
+		}else{
+			printf("  ");
+		
+		}
 	}
 	printf("\n");
    // printf("--------------------------\n");
@@ -124,6 +131,15 @@ node cria_possibilidades(node nodo_atual) {
 		qnt_rainhas = nodo_atual.estado[i] != -1 ? qnt_rainhas + 1 : qnt_rainhas;
 	}
    // printf("Quantidade de rainhas = %d\n", qnt_rainhas);
+
+	int slot;
+
+	/*for (int i = 0; i < 8; i++) {
+		if(nodo_atual.estado[i] == -1)
+
+	}
+*/
+
 	int estado[8];
 	for (int i = 0; i < 8; i++) {
 		estado[i] = nodo_atual.estado[i];
