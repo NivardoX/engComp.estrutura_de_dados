@@ -10,6 +10,8 @@
 // Number of vertices  
 // in the graph 
 int V;
+int MAX;
+int aux_destinho_path;
   
 // A utility function to find the  
 // vertex with minimum distance 
@@ -34,16 +36,23 @@ int minDistance(int dist[],
 // Function to print shortest 
 // path from source to j 
 // using parent array 
+int count_pilha_recursao = 0;
 void printPath(int parent[], int j) 
 { 
-      
     // Base Case : If j is source 
-    if (parent[j] == - 1) 
+    if (parent[j] == - 1) {
         return; 
-  
+    }
+    
     printPath(parent, parent[j]); 
-  
-    printf("%d ", j); 
+    if (j == aux_destinho_path)
+    {
+     
+    printf("%d.", j); 
+     }else{
+
+    printf("%d -> ", j); 
+     }
 } 
   
 // A utility function to print  
@@ -53,12 +62,18 @@ int printSolution(int dist[], int n,
                       int parent[]) 
 { 
     int src = 0; 
-    printf("Vertex\t Distance\tPath"); 
+    printf("Vertice\t\t Distancia\t\tCaminho"); 
     for (int i = 1; i < V; i++) 
     { 
-        printf("\n%d -> %d \t\t %d\t\t%d ", 
+        if(!(dist[i] > V * MAX)){
+        printf("\n%.2d -> %.2d \t\t %d\t\t%d -> ", 
                       src, i, dist[i], src); 
+        aux_destinho_path = i;
         printPath(parent, i); 
+        }else{
+            printf("\n%.2d -> %.2d \t\t %s\t%s ", 
+                      src, i, "INFINITO", "Não há caminho"); 
+        }
     } 
 } 
   
@@ -142,34 +157,36 @@ int main()
 { 
     //  Let us create the example 
     // graph discussed above 
-
-     FILE *file;
+    FILE *file;
     file=fopen("graph.txt", "r");
-    fscanf(file,"%d\n",&V);
+    
+    fscanf(file,"%d,%d\n",&V,&MAX);
+    
     int **graph;
     graph = (int**) malloc(sizeof(int* )* V);
+
     for (int i = 0; i < V; i++)
-    {
         graph[i] = (int*)malloc(sizeof(int)*V);
+    
+    for(int i = 0; i < V; i++){
+        for(int j = 0; j < V; j++){
+        if (!fscanf(file, "%d, ", &graph[i][j])) 
+            break;
+        // mat[i][j] -= '0'; 
+         printf("%.2d ",graph[i][j]); //Use lf format specifier, \n is for new line
+        }
+
+    printf("\n");
+
     }
 
-    for(int i = 0; i < V; i++)
-  {
-      for(int j = 0; j < V; j++) 
-      {
-  //Use lf format specifier, %c is for character
-       if (!fscanf(file, "%d, ", &graph[i][j])) 
-           break;
-      // mat[i][j] -= '0'; 
-       printf("%.2d ",graph[i][j]); //Use lf format specifier, \n is for new line
-      }
-      printf("\n");
-
-  }
-  fclose(file);
-
-  
+    fclose(file);
     dijkstra(graph, 0); 
     printf("\n");
+
+    for (int i = 0; i < V; i++)
+        free(graph[i]); 
+
+    free(graph);
     return 0; 
 } 

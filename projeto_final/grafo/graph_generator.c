@@ -1,15 +1,18 @@
 #include<stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-int main(int argc, char const *argv[])
+int main(int argc, char** argv)
 {
-	int n,x;
-	scanf("%d,%d",&n,&x);
+	int n = atoi( argv[1]);
+	int x = atoi(argv[2]);
+	//printf("Entre com a quantidade de vertices e o custo maximo.\n");
+	//scanf("%d,%d",&n,&x);
 	/* code */ FILE *file;
  	 file=fopen("graph.txt", "w+");
 
  	 int MAT[n][n];
- 	 srand(0);
+ 	 srand(time(NULL));
 	for(int i = 0; i < n; i++)
 	{
 	    for(int j = i; j < n; j++)
@@ -19,8 +22,9 @@ int main(int argc, char const *argv[])
 	        }
 
 	        else{
-	            int r = rand() % 10;
-	            int val = (r == 5)? x: r;
+	            int val = rand() % x;
+	            val = val<(int)(x/1.2)?0:val;
+	            val =val==0? 0:(rand() % x);
 	            MAT[i][j] = val;
 	            MAT[j][i] = val;  // If there is edge from i to j, then there
 	                               // must be edge from j to i
@@ -28,7 +32,7 @@ int main(int argc, char const *argv[])
 
 	    }
 	}
-	fprintf(file, "%d\n",n);
+	fprintf(file, "%d,%d\n",n,x);
 	for(int i = 0; i < n; i++)
 	{
 	    for(int j = 0; j < n; j++)
