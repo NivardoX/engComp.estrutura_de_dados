@@ -1,50 +1,31 @@
-
-// C program for Dijkstra's single  
-// source shortest path algorithm. 
-// The program is for adjacency matrix 
-// representation of the graph. 
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <limits.h> 
   
-// Number of vertices  
-// in the graph 
+//--------------GLOBAIS---=-------------//
 int V;
 int MAX;
 int aux_destinho_path;
+//--------------------------------------//
+
+//------------PROTOTIPOS----------------//
+int minDistance(int dist[], bool setado[]); 
+void printPath(int pai[], int j);
+int printSolution(int dist[], int n,int pai[]); 
+void dijkstra(int **graph, int fonte);
+//--------------------------------------//
+
   
-// A utility function to find the  
-// vertex with minimum distance 
-// value, from the set of vertices 
-// not yet included in shortest 
-// path tree 
-int minDistance(int dist[],  
-                bool sptSet[]) 
-{ 
-      
-    // Initialize min value 
-    int min = INT_MAX, min_index; 
-  
-    for (int v = 0; v < V; v++) 
-        if (sptSet[v] == false && 
-                   dist[v] <= min) 
-            min = dist[v], min_index = v; 
-  
-    return min_index; 
-} 
-  
-// Function to print shortest 
-// path from source to j 
-// using parent array 
+
 int count_pilha_recursao = 0;
-void printPath(int parent[], int j) 
+void printPath(int pai[], int j) 
 { 
-    // Base Case : If j is source 
-    if (parent[j] == - 1) {
+   
+    if (pai[j] == - 1) {
         return; 
     }
     
-    printPath(parent, parent[j]); 
+    printPath(pai, pai[j]); 
     if (j == aux_destinho_path)
     {
      
@@ -54,132 +35,110 @@ void printPath(int parent[], int j)
     printf("%d -> ", j); 
      }
 } 
+
+int minDistance(int dist[], bool setado[]){ 
+    
+    int min = INT_MAX, menor_index; 
   
-// A utility function to print  
-// the constructed distance 
-// array 
+    for (int v = 0; v < V; v++) 
+        if (setado[v] == false && 
+                   dist[v] <= min) 
+            min = dist[v], menor_index = v; 
+  
+    return menor_index; 
+} 
+ 
 int printSolution(int dist[], int n,  
-                      int parent[]) 
+                      int pai[]) 
 { 
-    int src = 0; 
-    printf("Vertice\t\t Distancia\t\tCaminho"); 
+    printf("\n");
+    int fonte = 0; 
+    printf("Destino\t\t Distancia\t\tCaminho"); 
     for (int i = 1; i < V; i++) 
     { 
-        if(!(dist[i] > V * MAX)){
-        printf("\n%.2d -> %.2d \t\t %d\t\t%d -> ", 
-                      src, i, dist[i], src); 
-        aux_destinho_path = i;
-        printPath(parent, i); 
-        }else{
-            printf("\n%.2d -> %.2d \t\t %s\t%s ", 
-                      src, i, "INFINITO", "Não há caminho"); 
-        }
+            if(!(dist[i] > V * MAX)){
+            printf("\n%.2d \t\t %d\t\t%d -> ", 
+                           i, dist[i], fonte); 
+            aux_destinho_path = i;
+            printPath(pai, i); 
+            }else{
+                printf("\n%.2d -> %.2d \t\t %s\t%s ", 
+                          fonte, i, "INFINITO", "Não há caminho"); 
+            }
     } 
 } 
   
-// Funtion that implements Dijkstra's 
-// single source shortest path 
-// algorithm for a graph represented 
-// using adjacency matrix representation 
-void dijkstra(int **graph, int src) 
+void dijkstra(int **graph, int fonte) 
 { 
-      
-    // The output array. dist[i] 
-    // will hold the shortest 
-    // distance from src to i 
+
     int dist[V];  
+
+    bool setado[V]; 
   
-    // sptSet[i] will true if vertex 
-    // i is included / in shortest 
-    // path tree or shortest distance  
-    // from src to i is finalized 
-    bool sptSet[V]; 
-  
-    // Parent array to store 
-    // shortest path tree 
-    int parent[V]; 
-  
-    // Initialize all distances as  
-    // INFINITE and stpSet[] as false 
+
+    int pai[V]; 
+
     for (int i = 0; i < V; i++) 
     { 
-        parent[0] = -1; 
+        pai[0] = -1; 
         dist[i] = INT_MAX; 
-        sptSet[i] = false; 
+        setado[i] = false; 
     } 
+
+    dist[fonte] = 0; 
   
-    // Distance of source vertex  
-    // from itself is always 0 
-    dist[src] = 0; 
-  
-    // Find shortest path 
-    // for all vertices 
+
     for (int count = 0; count < V - 1; count++) 
     { 
-        // Pick the minimum distance 
-        // vertex from the set of 
-        // vertices not yet processed.  
-        // u is always equal to src 
-        // in first iteration. 
-        int u = minDistance(dist, sptSet); 
+        int u = minDistance(dist, setado); 
+
+        setado[u] = true; 
   
-        // Mark the picked vertex  
-        // as processed 
-        sptSet[u] = true; 
-  
-        // Update dist value of the  
-        // adjacent vertices of the 
-        // picked vertex. 
+
         for (int v = 0; v < V; v++) 
-  
-            // Update dist[v] only if is 
-            // not in sptSet, there is 
-            // an edge from u to v, and  
-            // total weight of path from 
-            // src to v through u is smaller 
-            // than current value of 
-            // dist[v] 
-            if (!sptSet[v] && graph[u][v] && 
+
+            if (!setado[v] && graph[u][v] && 
                 dist[u] + graph[u][v] < dist[v]) 
             { 
-                parent[v] = u; 
+                pai[v] = u; 
                 dist[v] = dist[u] + graph[u][v]; 
             }  
     } 
   
-    // print the constructed 
-    // distance array 
-    printSolution(dist, V, parent); 
+
+    printSolution(dist, V, pai); 
 } 
-  
-// Driver Code 
 int main() 
 { 
-    //  Let us create the example 
-    // graph discussed above 
+
     FILE *file;
     file=fopen("graph.txt", "r");
     
     fscanf(file,"%d,%d\n",&V,&MAX);
     
+
     int **graph;
     graph = (int**) malloc(sizeof(int* )* V);
 
     for (int i = 0; i < V; i++)
         graph[i] = (int*)malloc(sizeof(int)*V);
     
+
+    printf("//--------------MATRIZ DE ADJACÊNCIA---------------------//\n");
     for(int i = 0; i < V; i++){
         for(int j = 0; j < V; j++){
         if (!fscanf(file, "%d, ", &graph[i][j])) 
             break;
-        // mat[i][j] -= '0'; 
-         printf("%.2d ",graph[i][j]); //Use lf format specifier, \n is for new line
+         printf("%.2d ",graph[i][j]); 
         }
 
     printf("\n");
 
     }
+    printf("//-------------------------------------------------------//\n");
 
+    printf("\nO grafo têm %d vertices.\n", V);
+    
     fclose(file);
     dijkstra(graph, 0); 
     printf("\n");
